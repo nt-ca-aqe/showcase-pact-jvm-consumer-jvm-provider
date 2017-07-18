@@ -22,11 +22,15 @@ repositories {
 	mavenCentral()
 }
 
-
 dependencies {
+
 	compile('com.fasterxml.jackson.core:jackson-databind')
 	compile('org.springframework:spring-web')
 	compile('org.springframework.hateoas:spring-hateoas')
 	compile('org.springframework.boot:spring-boot-starter')
+
+    testCompile('junit:junit')
+    testCompile('au.com.dius:pact-jvm-consumer-junit_2.11:3.5.2')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+
 }
