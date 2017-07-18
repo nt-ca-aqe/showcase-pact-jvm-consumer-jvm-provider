@@ -1,4 +1,4 @@
-package com.example.producer;
+package com.example.provider;
 
 import static java.util.stream.Collectors.toSet;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;

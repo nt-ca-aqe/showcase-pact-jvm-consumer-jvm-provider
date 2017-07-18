@@ -32,7 +32,7 @@ public class MovieServiceGatewayTest {
 
         RequestResponsePact pact = ConsumerPactBuilder//
             .consumer("consumer-one")//
-            .hasPactWith("producer")//
+            .hasPactWith("provider")//
             .given("Movie with ID 'b3fc0be8-463e-4875-9629-67921a1e00f4' exists")//
             .uponReceiving("get single movie")//
             .path("/movies/b3fc0be8-463e-4875-9629-67921a1e00f4")//

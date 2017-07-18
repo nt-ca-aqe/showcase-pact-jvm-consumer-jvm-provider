@@ -1,4 +1,4 @@
-package com.example.producer;
+package com.example.provider;
 
 import java.util.UUID;
 
@@ -19,7 +19,7 @@ import au.com.dius.pact.provider.junit.target.TestTarget;
 
 
 @RunWith(PactRunner.class)
-@Provider("producer")
+@Provider("provider")
 @PactFolder("src/test/pacts")
 @VerificationReports("console")
 public class MoviesControllerContractTest {

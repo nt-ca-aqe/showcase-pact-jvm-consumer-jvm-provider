@@ -1,9 +1,9 @@
 {
     "provider": {
-        "name": "producer"
+        "name": "provider"
     },
     "consumer": {
-        "name": "consumer-one"
+        "name": "consumer-two"
     },
     "interactions": [
         {
@@ -18,15 +18,27 @@
                     "Content-Type": "application/hal+json"
                 },
                 "body": {
+                    "metacriticScore": 0.79,
+                    "_links": {
+                        "self": {
+                            "href": "http://some-url/resource"
+                        }
+                    },
                     "title": "Iron Man",
-                    "imdbScore": 7.9
+                    "releaseYear": 2008
                 },
                 "matchingRules": {
                     "$.body.title": {
                         "match": "type"
                     },
-                    "$.body.imdbScore": {
+                    "$.body.releaseYear": {
                         "match": "number"
+                    },
+                    "$.body.metacriticScore": {
+                        "match": "number"
+                    },
+                    "$.body._links.self.href": {
+                        "match": "type"
                     }
                 }
             },
