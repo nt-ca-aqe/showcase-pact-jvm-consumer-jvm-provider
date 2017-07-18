@@ -26,9 +26,13 @@ repositories {
 	maven { url "https://repo.spring.io/milestone" }
 }
 
-
 dependencies {
+
 	compile('org.springframework.boot:spring-boot-starter-hateoas')
 	compile('org.springframework.boot:spring-boot-starter-web')
+
+	testCompile('junit:junit')
+	testCompile('au.com.dius:pact-jvm-provider-junit_2.11:3.5.2')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+
 }
