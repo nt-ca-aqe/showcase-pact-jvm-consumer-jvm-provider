@@ -16,6 +16,7 @@ be deleted from the provider's movie definition without any of the consumers
 suffering any consequences. If any of the other attributes is changed at least
 one, if not both, of the consumers will break.
 
-__Further Reading__:
+__More about Contract Testing__
+
 I collect more resources about the general topic of contract testing
 [here](https://github.com/slu-it/learning-contract-testing).
