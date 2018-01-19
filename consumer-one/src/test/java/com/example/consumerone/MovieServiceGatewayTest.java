@@ -23,17 +23,17 @@ public class MovieServiceGatewayTest {
     Map<String, String> headers = Collections.singletonMap("Content-Type", MediaTypes.HAL_JSON_VALUE);
 
     RestTemplate restTemplate = Application.createCustomRestTemplate();
-    MoviesServiceConfig config = new MoviesServiceConfig();
+    MoviesServiceSettings config = new MoviesServiceSettings();
 
     MoviesServiceGateway cut = new MoviesServiceGateway(restTemplate, config);
 
     @Test
-    public void getSingleMovie() throws Throwable {
+    public void getSingleMovie() {
 
         RequestResponsePact pact = ConsumerPactBuilder//
             .consumer("consumer-one")//
             .hasPactWith("provider")//
-            .given("Movie with ID 'b3fc0be8-463e-4875-9629-67921a1e00f4' exists")//
+            .given("Getting movie with any ID returns Iron Man")//
             .uponReceiving("get single movie")//
             .path("/movies/b3fc0be8-463e-4875-9629-67921a1e00f4")//
             .method("GET")//

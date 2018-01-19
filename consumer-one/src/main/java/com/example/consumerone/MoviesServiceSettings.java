@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties("services.movies")
-public class MoviesServiceConfig {
+public class MoviesServiceSettings {
 
     private String url;
 

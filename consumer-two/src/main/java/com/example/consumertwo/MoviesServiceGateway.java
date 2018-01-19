@@ -17,16 +17,16 @@ import org.springframework.web.client.RestTemplate;
 public class MoviesServiceGateway {
 
     private final RestTemplate restTemplate;
-    private final MoviesServiceConfig config;
+    private final MoviesServiceSettings settings;
 
-    public MoviesServiceGateway(RestTemplate restTemplate, MoviesServiceConfig config) {
+    public MoviesServiceGateway(RestTemplate restTemplate, MoviesServiceSettings settings) {
         this.restTemplate = restTemplate;
-        this.config = config;
+        this.settings = settings;
     }
 
     public List<Movie> getMovies() {
         ResponseEntity<MovieListResource> response =
-            restTemplate.exchange(config.getUrl() + "/movies", HttpMethod.GET, HttpEntity.EMPTY, MovieListResource.class);
+            restTemplate.exchange(settings.getUrl() + "/movies", HttpMethod.GET, HttpEntity.EMPTY, MovieListResource.class);
         if (response.getStatusCode() == HttpStatus.OK) {
             Resources<Movie> responseBody = response.getBody();
             return new ArrayList<>(responseBody.getContent());
@@ -36,7 +36,7 @@ public class MoviesServiceGateway {
 
     public Optional<Movie> getMovie(String id) {
         ResponseEntity<Movie> response =
-            restTemplate.exchange(config.getUrl() + "/movies/" + id, HttpMethod.GET, HttpEntity.EMPTY, Movie.class);
+            restTemplate.exchange(settings.getUrl() + "/movies/" + id, HttpMethod.GET, HttpEntity.EMPTY, Movie.class);
         if (response.getStatusCode() == HttpStatus.OK) {
             return Optional.of(response.getBody());
         } else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {

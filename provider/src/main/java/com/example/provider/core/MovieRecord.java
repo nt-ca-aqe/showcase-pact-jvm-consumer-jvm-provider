@@ -1,14 +1,16 @@
-package com.example.provider;
+package com.example.provider.core;
 
 import java.util.UUID;
 
+import com.example.provider.core.Movie;
 
-public class PersistedMovie {
+
+public class MovieRecord {
 
     private final UUID id;
     private final Movie movie;
 
-    public PersistedMovie(UUID id, Movie movie) {
+    public MovieRecord(UUID id, Movie movie) {
         this.id = id;
         this.movie = movie;
     }

@@ -1,4 +1,4 @@
-package com.example.provider;
+package com.example.provider.core;
 
 public class Movie {
 

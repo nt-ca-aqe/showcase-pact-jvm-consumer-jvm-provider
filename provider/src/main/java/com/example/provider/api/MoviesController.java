@@ -1,4 +1,4 @@
-package com.example.provider;
+package com.example.provider.api;
 
 import static java.util.stream.Collectors.toSet;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -19,10 +19,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.provider.core.Movie;
+import com.example.provider.core.MovieDatabase;
+import com.example.provider.core.NotFoundException;
+import com.example.provider.core.MovieRecord;
+
 
 @RestController
 @RequestMapping("/movies")
-public class MoviesController {
+class MoviesController {
 
     private final MovieDatabase database;
 
@@ -32,14 +37,14 @@ public class MoviesController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Resource<Movie> post(@RequestBody Movie movie) {
-        PersistedMovie persistedMovie = database.create(movie);
-        return toMovieResource(persistedMovie);
+    Resource<Movie> post(@RequestBody Movie movie) {
+        MovieRecord record = database.add(movie);
+        return toMovieResource(record);
     }
 
     @GetMapping
-    public Resources<Resource<Movie>> get() {
-        Set<Resource<Movie>> movies = database.getAll().stream()//
+    Resources<Resource<Movie>> get() {
+        Set<Resource<Movie>> movies = database.findAll()//
             .map(this::toMovieResource)//
             .collect(toSet());
         Link selfLink = linkTo(methodOn(MoviesController.class).get()).withSelfRel();
@@ -47,14 +52,14 @@ public class MoviesController {
     }
 
     @GetMapping("/{id}")
-    public Resource<Movie> get(@PathVariable UUID id) {
-        PersistedMovie persistedMovie = database.getById(id).orElseThrow(NotFoundException::new);
-        return toMovieResource(persistedMovie);
+    Resource<Movie> get(@PathVariable UUID id) {
+        MovieRecord record = database.findById(id);
+        return toMovieResource(record);
     }
 
-    private Resource<Movie> toMovieResource(PersistedMovie persistedMovie) {
-        Link selfLink = linkTo(methodOn(MoviesController.class).get(persistedMovie.getId())).withSelfRel();
-        return new Resource<>(persistedMovie.getMovie(), selfLink);
+    private Resource<Movie> toMovieResource(MovieRecord movieRecord) {
+        Link selfLink = linkTo(methodOn(MoviesController.class).get(movieRecord.getId())).withSelfRel();
+        return new Resource<>(movieRecord.getMovie(), selfLink);
     }
 
 }
