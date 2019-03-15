@@ -2,12 +2,14 @@ package com.example.provider;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 
 import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -48,7 +50,7 @@ public class SpringRestPactRunnerBasedContractTest {
         ironMan.setMetacriticScore(0.79f);
 
         MovieRecord ironManRecord = new MovieRecord(UUID.randomUUID(), ironMan);
-        given(dataStore.getById(any())).willReturn(Optional.of(ironManRecord));
+        when(dataStore.getById(any())).thenReturn(Optional.of(ironManRecord));
     }
 
 }
