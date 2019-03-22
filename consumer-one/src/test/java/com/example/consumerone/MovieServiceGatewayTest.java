@@ -4,6 +4,7 @@ import static au.com.dius.pact.consumer.ConsumerPactRunnerKt.runConsumerTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import au.com.dius.pact.consumer.ConsumerPactBuilder;
 import au.com.dius.pact.consumer.PactTestRun;
 import au.com.dius.pact.consumer.PactVerificationResult;
+import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.model.MockProviderConfig;
 import au.com.dius.pact.model.RequestResponsePact;
@@ -52,6 +54,40 @@ public class MovieServiceGatewayTest {
             assertThat(movie.getImdbScore()).isEqualTo(7.9f);
         });
 
+    }
+
+    @Test
+    public void getMoviesByScore() {
+
+    	float minScore = 8.0f;
+
+        DslPart response = new PactDslJsonBody()//
+			.eachLike("movies")
+				.stringType("title", "Iron Man")//
+				.numberType("imdbScore", minScore)
+			.closeObject();
+
+		RequestResponsePact pact = ConsumerPactBuilder//
+            .consumer("consumer-one")//
+            .hasPactWith("provider")//
+            .given("Getting movies by score returns at least one movie")//
+            .uponReceiving("get movies by score")//
+            	.path("/movies")//
+            	.query("score=" + minScore)
+            	.method("GET")//
+            .willRespondWith()//
+            	.status(200)//
+            	.headers(headers)//
+            	.body(response)//
+            .toPact();
+
+        executeWithPact(pact, mockServer -> {
+            config.setUrl(mockServer.getUrl());
+            List<Movie> movies = cut.getMoviesByScore(minScore);
+            movies.forEach(movie -> {
+            	assertThat(movie.getImdbScore()).isGreaterThanOrEqualTo(minScore);
+            });
+        });
     }
 
     private void executeWithPact(RequestResponsePact pact, PactTestRun test) {

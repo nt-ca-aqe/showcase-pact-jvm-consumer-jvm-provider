@@ -1,15 +1,15 @@
 package com.example.provider;
 
+import static java.util.Arrays.asList;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -52,5 +52,26 @@ public class SpringRestPactRunnerBasedContractTest {
         MovieRecord ironManRecord = new MovieRecord(UUID.randomUUID(), ironMan);
         when(dataStore.getById(any())).thenReturn(Optional.of(ironManRecord));
     }
+
+    @State("Getting movies by score returns at least one movie")
+    public void gettingMoviesByScoreReturnsAtLeastOneMovie() {
+        Movie lotr = new Movie();
+        lotr.setTitle("The Lord of the Rings - The Fellowship of the Ring");
+        lotr.setDescription("foo bar baz");
+        lotr.setReleaseYear(2001);
+        lotr.setImdbScore(9.2f);
+
+        Movie sw = new Movie();
+        sw.setTitle("Star Wars The Empre Strikes Back");
+        sw.setDescription("abc");
+        sw.setReleaseYear(1980);
+        sw.setImdbScore(8.2f);
+
+        MovieRecord lotrRecord = new MovieRecord(UUID.randomUUID(), lotr);
+        MovieRecord swRecord = new MovieRecord(UUID.randomUUID(), sw);
+
+        when(dataStore.getAll()).thenReturn(new HashSet<>(asList(lotrRecord, swRecord)));
+    }
+
 
 }

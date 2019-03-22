@@ -34,6 +34,17 @@ public class MoviesServiceGateway {
         throw new IllegalStateException("server responded with: " + response);
     }
 
+    public List<Movie> getMoviesByScore(Float score) {
+    	String url = String.format("%s/movies?score=%s", settings.getUrl(), score);
+    	ResponseEntity<MovieListResource> response =
+    			restTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY, MovieListResource.class);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            Resources<Movie> responseBody = response.getBody();
+            return new ArrayList<>(responseBody.getContent());
+        }
+        throw new IllegalStateException("server responded with: " + response);
+    }
+
     public Optional<Movie> getMovie(String id) {
         ResponseEntity<Movie> response =
             restTemplate.exchange(settings.getUrl() + "/movies/" + id, HttpMethod.GET, HttpEntity.EMPTY, Movie.class);

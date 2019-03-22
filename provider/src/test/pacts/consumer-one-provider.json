@@ -18,8 +18,8 @@
                     "Content-Type": "application/hal+json"
                 },
                 "body": {
-                    "title": "Iron Man",
-                    "imdbScore": 7.9
+                    "imdbScore": 7.9,
+                    "title": "Iron Man"
                 },
                 "matchingRules": {
                     "$.body.title": {
@@ -31,6 +31,41 @@
                 }
             },
             "providerState": "Getting movie with any ID returns Iron Man"
+        },
+        {
+            "description": "get movies by score",
+            "request": {
+                "method": "GET",
+                "path": "/movies",
+                "query": "score=8.0"
+            },
+            "response": {
+                "status": 200,
+                "headers": {
+                    "Content-Type": "application/hal+json"
+                },
+                "body": {
+                    "movies": [
+                        {
+                            "imdbScore": 8,
+                            "title": "Iron Man"
+                        }
+                    ]
+                },
+                "matchingRules": {
+                    "$.body.movies": {
+                        "match": "type",
+                        "min": 0
+                    },
+                    "$.body.movies[*].imdbScore": {
+                        "match": "number"
+                    },
+                    "$.body.movies[*].title": {
+                        "match": "type"
+                    }
+                }
+            },
+            "providerState": "Getting movies by score returns at least one movie"
         }
     ],
     "metadata": {
