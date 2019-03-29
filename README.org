@@ -1,0 +1,67 @@
+# -*- fill-column: 110 -*-
+
+* Stuttgarter TestTage Workshop
+
+Das Workshop-Projekt besteht aus einem kleinen Ökosystem von 3 Projekten - einem Provider und 2 Consumern. Der
+Provider stellt simple informationen über Filme in seiner Datenbank zur Verfügung, die beiden Consumer lesen
+jeweils ein anderes Subset der Daten.
+
+** Movie Provider
+
+Insgesamt stellt der Service pro Film folgende Daten zur Verfügung:
+
+#+BEGIN_SRC java
+  class Movie {
+      String  title;
+      String  description;
+      Integer releaseYear;
+      Float   imdbScore;
+      Float   metacriticScore;
+  }
+#+END_SRC
+
+Er verfügt über 3 Endpoints:
+
+*** Auf alle Filme zugreifen
+
+#+BEGIN_SRC http :pretty
+  GET http://localhost:8080/movies?score=8.5
+#+END_SRC
+
+Dieser Endpoint liefert eine Liste aller Filme, die sich in der Datenbank befinden. Der ~score~ Parameter ist
+optional und falls er vorhanden ist, werden nur diejenigen Filme zurückgegeben, deren ~imbdScore~ mindestes
+genaus hoch ist, zurückgegeben.
+
+*** Auf einen Film zugreifen
+
+#+BEGIN_SRC http :pretty 
+  GET http://localhost:8080/movies/412b24fd-6c80-4aed-80c6-a306ecf7bcbd
+#+END_SRC
+
+Dieser Endpoint liefert die Daten eines bestimmten Filmes. Die Id wird vom Provider bestimmt und ist in den
+~self~ Links der Filme zu finden.
+
+*** Einen Film anlegen
+
+#+BEGIN_SRC http :pretty
+  POST http://localhost:8080/movies
+  Content-Type: application/json
+
+  {
+    "title": "Contract Testing The Movie",
+    "description": "Macht euere Micrto Services nicht kaputt!"
+  }
+#+END_SRC
+
+
+Dieser Endpoint erlaubt es, einen neuen Film anzulegen.
+
+** Consumer 1
+
+Dieser Consumer liest nur die ~title~ und ~imdbScore~ Felder und benutzt beide ~GET~ Endpoints, inklusive dem
+Filtern der Filme nach dem ~score~.
+
+** Consumer 2
+
+Dieser Consumer liest die ~title~, ~releaseYear~ und ~metacriticScore~ Felder und benutzt die ~GET~ auch
+Schnittstellen, allerdings ohne nach ~score~ zu filtern.
