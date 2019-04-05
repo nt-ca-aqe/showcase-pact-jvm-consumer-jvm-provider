@@ -90,7 +90,16 @@ Response:
  }
 #+END_SRC
 
-The id can be accessed from the ~self~ links. In case a request with non-existing id is made, the following response will be received: TODO/FIX
+The id can be accessed from the ~self~ links. In case a request with non-existing id is made, the following response will be received:
+
+#+BEGIN_SRC java
+  HTTP_STATUS 404(Not Found)
+  {
+      "status": 404,
+      "error": "Not Found",
+      "message": "No movie has been found for the requested id."
+  }
+#+END_SRC
 
 *** Creating a movie (POST operation)
 
