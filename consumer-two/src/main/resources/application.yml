@@ -1,3 +1,6 @@
 services:
   movies:
-    url: "http://localhost:8080"
+    url: "http://localhost:8090"
+
+server:
+  port: 8091 #the port on which the application is running
