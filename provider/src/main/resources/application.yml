@@ -1,0 +1,2 @@
+server:
+  port: 8090 #the port on which the application is running

@@ -2,49 +2,102 @@
 
 * Stuttgarter TestTage Workshop
 
-Das Workshop-Projekt besteht aus einem kleinen Ökosystem von 3 Projekten - einem Provider und 2 Consumern. Der
-Provider stellt simple informationen über Filme in seiner Datenbank zur Verfügung, die beiden Consumer lesen
-jeweils ein anderes Subset der Daten.
+The workshop project consists of a small ecosystem of 3 projects - one provider and 2 consumers.
+The provider has a Movie resource that it provides via a REST API.
 
 ** Movie Provider
 
-Insgesamt stellt der Service pro Film folgende Daten zur Verfügung:
+The following REST Endpoints are available:
 
-#+BEGIN_SRC java
-  class Movie {
-      String  title;
-      String  description;
-      Integer releaseYear;
-      Float   imdbScore;
-      Float   metacriticScore;
+*** Get all movies
+
+Request:
+
+#+BEGIN_SRC http :pretty
+  GET http://localhost:8090/movies
+#+END_SRC
+
+Response:
+
+#+BEGIN_SRC js
+  {
+      "movies": [
+          {
+              "title": "The Dark Knight",
+              "description": "Lorem Ipsum ...",
+              "releaseYear": 2008,
+              "imdbScore": 9,
+              "metacriticScore": 0.82,
+              "_links": {
+                  "self": {
+                      "href": "http://localhost:8090/movies/ef824f87-adbb-4f5e-8261-544edeca8ae2"
+                  }
+              }
+          },
+          {
+              "title": "Batman Begins",
+              "description": "Lorem Ipsum ...",
+              "releaseYear": 2005,
+              "imdbScore": 8.3,
+              "metacriticScore": 0.7,
+              "_links": {
+                  "self": {
+                      "href": "http://localhost:8090/movies/8b2ebddb-4ebc-437c-805d-89e035a488eb"
+                  }
+              }
+          }
+      "_links": {
+          "self": {
+              "href": "http://localhost:8090/movies{?score}",
+              "templated": true
+          }
+      }
   }
 #+END_SRC
 
-Er verfügt über 3 Endpoints:
+Calling this endpoint will return all available movies.
 
-*** Auf alle Filme zugreifen
-
-#+BEGIN_SRC http :pretty
-  GET http://localhost:8080/movies?score=8.5
-#+END_SRC
-
-Dieser Endpoint liefert eine Liste aller Filme, die sich in der Datenbank befinden. Der ~score~ Parameter ist
-optional und falls er vorhanden ist, werden nur diejenigen Filme zurückgegeben, deren ~imbdScore~ mindestes
-genaus hoch ist, zurückgegeben.
-
-*** Auf einen Film zugreifen
-
-#+BEGIN_SRC http :pretty 
-  GET http://localhost:8080/movies/412b24fd-6c80-4aed-80c6-a306ecf7bcbd
-#+END_SRC
-
-Dieser Endpoint liefert die Daten eines bestimmten Filmes. Die Id wird vom Provider bestimmt und ist in den
-~self~ Links der Filme zu finden.
-
-*** Einen Film anlegen
+*** Get all movies by score
 
 #+BEGIN_SRC http :pretty
-  POST http://localhost:8080/movies
+  GET http://localhost:8090/movies?score=8.5
+#+END_SRC
+
+Calling this endpoint will return only the movies with the requested score.
+
+*** Get a single movie by id
+
+Request:
+
+#+BEGIN_SRC http :pretty
+  GET http://localhost:8090/movies/6a885503-2b53-44f1-ac4b-c49f59f0ccba
+#+END_SRC
+
+Response:
+
+#+BEGIN_SRC js
+ {
+     "title": "Batman Begins",
+     "description": "Lorem Ipsum ...",
+     "releaseYear": 2005,
+     "imdbScore": 8.3,
+     "metacriticScore": 0.7,
+     "_links": {
+         "self": {
+             "href": "http://localhost:8090/movies/6a885503-2b53-44f1-ac4b-c49f59f0ccba"
+         }
+     }
+ }
+#+END_SRC
+
+The id can be accessed from the ~self~ links. In case a request with non-existing id is made, the following response will be received: TODO/FIX
+
+*** Creating a movie (POST operation)
+
+Request:
+
+#+BEGIN_SRC http :pretty
+  POST http://localhost:8090/movies
   Content-Type: application/json
 
   {
@@ -53,15 +106,66 @@ Dieser Endpoint liefert die Daten eines bestimmten Filmes. Die Id wird vom Provi
   }
 #+END_SRC
 
+Response:
 
-Dieser Endpoint erlaubt es, einen neuen Film anzulegen.
+#+BEGIN_SRC java
+  HTTP_STATUS 201(Created)
+#+END_SRC
 
 ** Consumer 1
 
-Dieser Consumer liest nur die ~title~ und ~imdbScore~ Felder und benutzt beide ~GET~ Endpoints, inklusive dem
-Filtern der Filme nach dem ~score~.
+Consumed Endpoints:
+#+BEGIN_SRC http :pretty
+  GET http://localhost:8090/movies?score={someNumber}
+  GET http://localhost:8090/movies?score={id}
+#+END_SRC
+
+Consumed Properties:
+ - title
+ - imdbScore
 
 ** Consumer 2
 
-Dieser Consumer liest die ~title~, ~releaseYear~ und ~metacriticScore~ Felder und benutzt die ~GET~ auch
-Schnittstellen, allerdings ohne nach ~score~ zu filtern.
+Consumed Endpoints:
+#+BEGIN_SRC http :pretty
+  GET http://localhost:8090/movies
+  GET http://localhost:8090/movies?score={id}
+#+END_SRC
+
+Consumed Properties:
+ - title
+ - releaseYear
+ - metacriticScore
+
+** Local Setup
+
+*** Clone Repository
+
+#+BEGIN_SRC sh
+  git clone https://github.com/nt-ca-aqe/showcase-pact-jvm-consumer-jvm-provider.git
+  git checkout -b STT origin/STT
+#+END_SRC
+
+*** Build Project
+
+#+BEGIN_SRC sh
+  ./gradlew build
+#+END_SRC
+
+*** Start Provider Service
+
+#+BEGIN_SRC sh
+  ./gradlew bootRun
+#+END_SRC
+
+*** Start Consumer 1
+
+#+BEGIN_SRC sh
+  ./gradlew bootRun
+#+END_SRC
+
+*** Start Consumer 2
+
+#+BEGIN_SRC sh
+  ./gradlew bootRun
+#+END_SRC
