@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +24,12 @@ import com.example.provider.core.Movie;
 import com.example.provider.core.MovieDatabase;
 import com.example.provider.core.MovieRecord;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 @RestController
 @RequestMapping("/movies")
+@Validated
 class MoviesController {
 
     private final MovieDatabase database;
@@ -41,16 +46,16 @@ class MoviesController {
     }
 
     @GetMapping
-    MoviesResource getAll(@RequestParam(required=false) Float score) {
+    MoviesResource getAll(@RequestParam(required = false) @Min(1) @Max(10) Float score) {
         Set<Resource<Movie>> movies = database.findAll(score)//
-        		.map(this::toMovieResource)
-        		.collect(Collectors.toSet());
+                .map(this::toMovieResource)
+                .collect(Collectors.toSet());
 
         MoviesResource result = new MoviesResource(movies);
         Link selfLink = linkTo(methodOn(MoviesController.class).getAll(score)).withSelfRel();
         result.add(selfLink);
 
-		return result;
+        return result;
     }
 
     @GetMapping("/{id}")
