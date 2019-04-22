@@ -5,6 +5,8 @@
 The workshop project consists of a small ecosystem of 3 projects - one provider and 2 consumers.
 The provider has a Movie resource that it provides via a REST API.
 
+[[file:media/Diagram.png]]
+
 ** Movie Provider
 
 The following REST Endpoints are available:
