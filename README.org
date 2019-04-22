@@ -125,8 +125,9 @@ Response:
 
 Consumed Endpoints:
 #+BEGIN_SRC http :pretty
+  GET http://localhost:8090/movies
   GET http://localhost:8090/movies?score={someNumber}
-  GET http://localhost:8090/movies?score={id}
+  GET http://localhost:8090/movies/{id}
 #+END_SRC
 
 Consumed Properties:
@@ -138,7 +139,7 @@ Consumed Properties:
 Consumed Endpoints:
 #+BEGIN_SRC http :pretty
   GET http://localhost:8090/movies
-  GET http://localhost:8090/movies?score={id}
+  GET http://localhost:8090/movies/{id}
 #+END_SRC
 
 Consumed Properties:
