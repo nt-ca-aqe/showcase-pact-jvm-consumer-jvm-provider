@@ -18,14 +18,14 @@
                     "Content-Type": "application/hal+json"
                 },
                 "body": {
-                    "metacriticScore": 0.79,
                     "_links": {
                         "self": {
                             "href": "http://some-url/resource"
                         }
                     },
-                    "title": "Iron Man",
-                    "releaseYear": 2008
+                    "metacriticScore": 0.79,
+                    "releaseYear": 2008,
+                    "title": "Iron Man"
                 },
                 "matchingRules": {
                     "$.body.title": {

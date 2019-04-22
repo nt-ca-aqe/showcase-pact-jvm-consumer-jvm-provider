@@ -10,8 +10,10 @@ import org.junit.Test;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.web.client.RestTemplate;
 
+import au.com.dius.pact.consumer.ConsumerPactBuilder;
 import au.com.dius.pact.consumer.PactTestRun;
 import au.com.dius.pact.consumer.PactVerificationResult;
+import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.model.MockProviderConfig;
 import au.com.dius.pact.model.RequestResponsePact;
 
@@ -27,8 +29,35 @@ public class MovieServiceGatewayTest {
 
     @Test
     public void getSingleMovie() {
-        executeWithPact(null, mockServer -> {
+
+        RequestResponsePact pact = ConsumerPactBuilder//
+            .consumer("consumer-two")//
+            .hasPactWith("provider")//
+            .given("Getting movie with any ID returns Iron Man")//
+            .uponReceiving("get single movie")//
+            .path("/movies/b3fc0be8-463e-4875-9629-67921a1e00f4")//
+            .method("GET")//
+            .willRespondWith()//
+            .status(200)//
+            .headers(headers)//
+            .body(new PactDslJsonBody()//
+                .stringType("title", "Iron Man")//
+                .numberType("releaseYear", 2008)//
+                .numberType("metacriticScore", 0.79f)//
+                .object("_links")//
+                .object("self")//
+                .stringType("href", "http://some-url/resource")//
+                .closeObject()//
+                .closeObject())//
+            .toPact();
+
+        executeWithPact(pact, mockServer -> {
             config.setUrl(mockServer.getUrl());
+            Movie movie = cut.getMovie("b3fc0be8-463e-4875-9629-67921a1e00f4").get();
+            assertThat(movie.getTitle()).isEqualTo("Iron Man");
+            assertThat(movie.getReleaseYear()).isEqualTo(2008);
+            assertThat(movie.getMetacriticScore()).isEqualTo(0.79f);
+            assertThat(movie.getId()).isNotNull();
         });
 
     }
